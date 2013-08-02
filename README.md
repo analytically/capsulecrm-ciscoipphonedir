@@ -1,4 +1,4 @@
-capsulecrm-ciscoipphonedir
+capsulecrm-ciscoipphonedir [![Build Status](https://travis-ci.org/coenrecruitment/capsulecrm-ciscoipphonedir.png)](https://travis-ci.org/coenrecruitment/capsulecrm-ciscoipphonedir)
 ==========================
 
 Capsule CRM integration with your Cisco IP phone.

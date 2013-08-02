@@ -1,5 +1,6 @@
 import sbt._
 import Keys._
+import sbtassembly.Plugin.AssemblyKeys._
 import scala.Some
 
 object Build extends sbt.Build {
@@ -9,13 +10,13 @@ object Build extends sbt.Build {
 
   lazy val root = Project(id = "capsulecrm-ciscoipphonedir", base = file("."))
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-    .settings(com.typesafe.sbt.SbtStartScript.startScriptForClassesSettings: _*)
+    .settings(sbtassembly.Plugin.assemblySettings: _*)
     .settings(
     version := buildVersion,
     organization := "uk.co.coen",
     organizationName := "Coen Recruitment",
     organizationHomepage := Some(new URL("http://www.coen.co.uk")),
-    description := "Cisco IP Phone Directory backed by Capsule CRM",
+    description := "Search Capsule CRM from your Cisco IP phone",
     startYear := Some(2013),
     scalaVersion := "2.10.2",
     scalacOptions := Seq(
@@ -23,6 +24,7 @@ object Build extends sbt.Build {
       "-unchecked",
       "-deprecation",
       "-target:jvm-1.6"),
+    jarName in assembly := "capsule-cisco.jar",
     resolvers += Resolver.typesafeRepo("releases"),
     resolvers += Resolver.typesafeRepo("snapshots"),
     resolvers += Resolver.sonatypeRepo("releases"),

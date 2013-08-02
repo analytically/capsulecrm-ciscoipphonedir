@@ -1,6 +1,5 @@
 package uk.co.coen.ciscoipphonedir
 
-import scala.concurrent.duration._
 import akka.actor.Actor
 import spray.can.Http
 import spray.http._
@@ -123,14 +122,6 @@ class CapsuleCRMCiscoIPPhoneDirectoryService extends Actor {
       }
       futureResponse.onFailure {
         case ex: Throwable => client ! HttpResponse(status = InternalServerError, entity = HttpEntity(ex.getMessage))
-      }
-
-    case HttpRequest(GET, Uri.Path("/ping"), _, _, _) => sender ! HttpResponse(entity = "PONG!")
-
-    case HttpRequest(GET, Uri.Path("/stop"), _, _, _) =>
-      sender ! HttpResponse(entity = "Shutting down in 1 second ...")
-      context.system.scheduler.scheduleOnce(1.second) {
-        context.system.shutdown()
       }
 
     case _: HttpRequest => sender ! HttpResponse(NotFound, entity = "Unknown resource!")

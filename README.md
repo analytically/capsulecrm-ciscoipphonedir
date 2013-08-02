@@ -1,7 +1,7 @@
 capsulecrm-ciscoipphonedir [![Build Status](https://travis-ci.org/coenrecruitment/capsulecrm-ciscoipphonedir.png)](https://travis-ci.org/coenrecruitment/capsulecrm-ciscoipphonedir)
 ==========================
 
-Capsule CRM integration with your Cisco IP phone.
+Search Capsule CRM from your Cisco IP phone.
 
 ### Configuration
 
@@ -15,10 +15,24 @@ capsulecrm.token="<your token here>"
 
 ### Running
 
-```scala
-sbt package
+```
+sbt assembly
 ```
 
 ```
-java -jar capsule-cisco.jar
+java -jar target/scala_2.10/capsule-cisco.jar
 ```
+
+### Cisco IP Phone Setup
+
+Todo
+
+### Validated On
+
+- Cisco SPA504G
+
+### License
+
+Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+Copyright 2013 Coen Recruitment Ltd - www.coen.co.uk.

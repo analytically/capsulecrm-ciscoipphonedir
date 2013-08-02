@@ -3,6 +3,10 @@ capsulecrm-ciscoipphonedir [![Build Status](https://travis-ci.org/coenrecruitmen
 
 Search [Capsule CRM](http://capsulecrm.com/) from your [Cisco IP phone](http://www.cisco.com/cisco/web/solutions/small_business/products/voice_conferencing/SPA_500/index.html).
 
+### Requirements
+
+Java 6 or later. A Capsule CRM account and token.
+
 ### Configuration
 
 In `conf/application.conf`, add your Capsule CRM URL and Capsule CRM API token.
@@ -13,14 +17,16 @@ capsulecrm.url="https://<yourdomain>.capsulecrm.com"
 capsulecrm.token="<your token here>"
 ```
 
-### Running
+### Building
 
 ```
 sbt assembly
 ```
 
+### Running
+
 ```
-java -jar target/scala_2.10/capsule-cisco.jar
+java -jar target/scala-2.10/capsule-cisco.jar
 ```
 
 ### Cisco IP Phone Setup

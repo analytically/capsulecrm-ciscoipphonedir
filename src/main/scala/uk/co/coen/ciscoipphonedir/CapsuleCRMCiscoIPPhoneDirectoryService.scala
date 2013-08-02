@@ -43,12 +43,12 @@ class CapsuleCRMCiscoIPPhoneDirectoryService extends Actor {
         <CiscoIPPhoneMenu>
           <Prompt>{title}</Prompt>
           <MenuItem>
-            <Name>Search by name, telephone number</Name>
+            <Name>Search by name</Name>
             <URL>http://{serverIP}/inputname.xml</URL>
           </MenuItem>
           <MenuItem>
-            <Name>Search by email address</Name>
-            <URL>http://{serverIP}/inputemail.xml</URL>
+            <Name>Search by tag</Name>
+            <URL>http://{serverIP}/inputtag.xml</URL>
           </MenuItem>
         </CiscoIPPhoneMenu>.toString()
       )
@@ -58,10 +58,10 @@ class CapsuleCRMCiscoIPPhoneDirectoryService extends Actor {
       entity = HttpEntity(MediaTypes.`text/xml`,
         <CiscoIPPhoneInput>
           <Title>{title}</Title>
-          <Prompt>Enter the name or telephone number</Prompt>
+          <Prompt>Search by name</Prompt>
           <URL>http://{serverIP}/search.xml</URL>
           <InputItem>
-            <DisplayName>Enter name or telephone number</DisplayName>
+            <DisplayName>Enter the name</DisplayName>
             <QueryStringParam>q</QueryStringParam>
             <InputFlags>U</InputFlags>
           </InputItem>
@@ -69,15 +69,15 @@ class CapsuleCRMCiscoIPPhoneDirectoryService extends Actor {
       )
     )
 
-    case HttpRequest(GET, Uri.Path("/inputemail.xml"), _, _, _) => sender ! HttpResponse(
+    case HttpRequest(GET, Uri.Path("/inputtag.xml"), _, _, _) => sender ! HttpResponse(
       entity = HttpEntity(MediaTypes.`text/xml`,
         <CiscoIPPhoneInput>
           <Title>{title}</Title>
-          <Prompt>Enter the email address</Prompt>
+          <Prompt>Search by tag</Prompt>
           <URL>http://{serverIP}/search.xml</URL>
           <InputItem>
-            <DisplayName>Enter name or telephone number</DisplayName>
-            <QueryStringParam>email</QueryStringParam>
+            <DisplayName>Enter the tag</DisplayName>
+            <QueryStringParam>tag</QueryStringParam>
             <InputFlags>U</InputFlags>
           </InputItem>
         </CiscoIPPhoneInput>.toString()

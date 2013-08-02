@@ -80,7 +80,7 @@ object Main extends App with SimpleRoutingApp {
         } ~
         path("search.xml") {
           parameters('q ?, 'tag ?) { (q, tag) =>
-            respondWithMediaType(MediaTypes.`text/xml`) { ctx =>
+            ctx =>
 
               val queryString = q match {
                 case Some(query) => "q=" + query
@@ -132,7 +132,6 @@ object Main extends App with SimpleRoutingApp {
                       }
                     </CiscoIPPhoneDirectory>.toString())
               }
-            }
           }
         }
     }

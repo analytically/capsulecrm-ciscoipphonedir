@@ -1,7 +1,7 @@
 capsulecrm-ciscoipphonedir
 ==========================
 
-Link between Cisco XML directory and Capsule CRM for phone caller ID lookup.
+Capsule CRM integration with your Cisco IP phone.
 
 ### Configuration
 

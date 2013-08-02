@@ -1,3 +1,5 @@
+import com.typesafe.sbt.SbtScalariform
+import com.typesafe.sbt.SbtScalariform.ScalariformKeys
 import sbt._
 import Keys._
 import sbtassembly.Plugin.AssemblyKeys._
@@ -8,9 +10,20 @@ object Build extends sbt.Build {
 
   lazy val buildVersion = "1.0.0-SNAPSHOT"
 
+  lazy val formatSettings = SbtScalariform.scalariformSettings ++ Seq(
+    ScalariformKeys.preferences in Compile := formattingPreferences,
+    ScalariformKeys.preferences in Test    := formattingPreferences
+  )
+
+  def formattingPreferences = {
+    import scalariform.formatter.preferences._
+    FormattingPreferences()
+  }
+
   lazy val root = Project(id = "capsulecrm-ciscoipphonedir", base = file("."))
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .settings(sbtassembly.Plugin.assemblySettings: _*)
+    .settings(formatSettings: _*)
     .settings(
     version := buildVersion,
     organization := "uk.co.coen",
@@ -34,7 +47,7 @@ object Build extends sbt.Build {
     libraryDependencies ++=
       compile(
         typesafeConfig, scalalogging, akkaActor, jsonLenses,
-        sprayCan, sprayRouting, sprayCaching, sprayClient,
+        sprayCan, sprayRouting, sprayClient,
         akkaSlf4j, logbackClassic)
   )
 }

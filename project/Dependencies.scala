@@ -29,7 +29,6 @@ object Dependencies {
   // Spray
   val sprayCan = "io.spray" % "spray-can" % V.spray
   val sprayRouting = "io.spray" % "spray-routing" % V.spray
-  val sprayCaching = "io.spray" % "spray-caching" % V.spray
   val sprayClient = "io.spray" % "spray-client" % V.spray
 
   // Akka

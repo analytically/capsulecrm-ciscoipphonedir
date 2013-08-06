@@ -3,6 +3,8 @@ capsulecrm-ciscoipphonedir [![Build Status](https://travis-ci.org/coenrecruitmen
 
 Search [Capsule CRM](http://capsulecrm.com/) from your [Cisco IP phone](http://www.cisco.com/cisco/web/solutions/small_business/products/voice_conferencing/SPA_500/index.html).
 
+Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@analytically](http://twitter.com/analytically) for updates.
+
 ### Requirements
 
 Java 6 or later. A Capsule CRM account and token.

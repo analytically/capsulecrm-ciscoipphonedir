@@ -47,10 +47,7 @@ object Build extends sbt.Build {
     resolvers ++= Dependencies.nonStandardRepos,
     shellPrompt := ShellPrompt.buildShellPrompt,
     libraryDependencies ++=
-      compile(
-        typesafeConfig, scalalogging, akkaActor, jsonLenses,
-        sprayCan, sprayRouting, sprayClient,
-        akkaSlf4j, logbackClassic)
+      compile(scalalogging, jsonLenses, sprayCan, sprayRouting, sprayCaching, sprayClient, akkaSlf4j, logbackClassic)
   )
 }
 

@@ -22,17 +22,16 @@ object Dependencies {
   }
 
   // Utilities
-  val typesafeConfig = "com.typesafe" % "config" % "1.0.2"
   val scalalogging = "com.typesafe" %% "scalalogging-slf4j" % "1.1.0-SNAPSHOT"
   val jsonLenses = "net.virtual-void" %%  "json-lenses" % "0.5.4-SNAPSHOT"
 
   // Spray
   val sprayCan = "io.spray" % "spray-can" % V.spray
+  val sprayCaching = "io.spray" % "spray-caching" % V.spray
   val sprayRouting = "io.spray" % "spray-routing" % V.spray
   val sprayClient = "io.spray" % "spray-client" % V.spray
 
   // Akka
-  val akkaActor = "com.typesafe.akka" %% "akka-actor" % V.akka
   val akkaSlf4j = "com.typesafe.akka" %% "akka-slf4j" % V.akka
 
   // Logging

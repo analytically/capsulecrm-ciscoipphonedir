@@ -35,6 +35,8 @@ object Build extends sbt.Build {
     scalacOptions := Seq(
       "-encoding", "utf8",
       "-unchecked",
+      "-feature",
+      "-language:postfixOps",
       "-deprecation",
       "-target:jvm-1.6"),
     jarName in assembly := "capsule-cisco.jar",

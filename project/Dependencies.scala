@@ -24,7 +24,7 @@ object Dependencies {
   // Utilities
   val typesafeConfig = "com.typesafe" % "config" % "1.0.2"
   val scalalogging = "com.typesafe" %% "scalalogging-slf4j" % "1.1.0-SNAPSHOT"
-  val jsonLenses = "net.virtual-void" %%  "json-lenses" % "0.5.3"
+  val jsonLenses = "net.virtual-void" %%  "json-lenses" % "0.5.4-SNAPSHOT"
 
   // Spray
   val sprayCan = "io.spray" % "spray-can" % V.spray

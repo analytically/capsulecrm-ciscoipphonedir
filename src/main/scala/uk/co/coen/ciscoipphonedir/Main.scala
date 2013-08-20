@@ -1,6 +1,6 @@
 package uk.co.coen.ciscoipphonedir
 
-import akka.actor.{ Props, ActorSystem }
+import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import spray.http._
 import scala.concurrent.Future
@@ -11,7 +11,6 @@ import spray.http.StatusCodes._
 import spray.http.HttpRequest
 import scala.Some
 import spray.http.HttpResponse
-import scala.util.Try
 import MediaTypes._
 
 object Main extends App with SimpleRoutingApp {
@@ -94,38 +93,39 @@ object Main extends App with SimpleRoutingApp {
 
                   val json = JsonParser(response.entity.asString)
 
-                  val organisationArrayIds = 'parties / 'organisation / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
-                  val personArrayIds = 'parties / 'person / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
+                  val organisationArrayIds = 'parties / optionalField("organisation") / arrayOrSingletonAsArray / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
+                  val personArrayIds = 'parties / optionalField("person") / arrayOrSingletonAsArray / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
 
                   ctx.complete(OK,
                     <CiscoIPPhoneDirectory>
                       <Title>{ title }</Title>
                       <Prompt>{ title }</Prompt>
                       {
-                        for (id <- Try(json.extract[String](organisationArrayIds)).getOrElse(Seq())) yield {
+                        for (id <- json.extract[String](organisationArrayIds)) yield {
                           <DirectoryEntry>
                             <Name>
-                              { json.extract[String]('parties / 'organisation / filter('id.is[String](_ == id)) / 'name) }
+                              { json.extract[String]('parties / 'organisation / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'name) }
                             </Name>
                             <Telephone>
-                              { Try(json.extract[String]('parties / 'organisation / filter('id.is[String](_ == id)) / 'contacts / 'phone / element(0) / 'phoneNumber)).getOrElse(json.extract[String]('parties / 'organisation / filter('id.is[String](_ == id)) / 'contacts / 'phone / 'phoneNumber)) }
+                              { json.extract[String]('parties / 'organisation / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'contacts / 'phone / arrayOrSingletonAsArray / element(0) / 'phoneNumber) }
                             </Telephone>
                           </DirectoryEntry>
                         }
                       }
                       {
-                        for (id <- Try(json.extract[String](personArrayIds)).getOrElse(Seq())) yield {
+                        for (id <- json.extract[String](personArrayIds)) yield {
                           <DirectoryEntry>
                             <Name>
-                              { json.extract[String]('parties / 'person / filter('id.is[String](_ == id)) / 'firstName) }{ json.extract[String]('parties / 'person / filter('id.is[String](_ == id)) / 'lastName) }{
-                                json.extract[String]('parties / 'person / filter('id.is[String](_ == id)) / 'organisationName).headOption match {
+                              { json.extract[String]('parties / 'person / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'firstName) }
+                              { json.extract[String]('parties / 'person / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'lastName) }{
+                                json.extract[String]('parties / 'person / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / optionalField("organisationName")).headOption match {
                                   case None => ""
                                   case Some(on) => " at " + on
                                 }
                               }
                             </Name>
                             <Telephone>
-                              { Try(json.extract[String]('parties / 'person / filter('id.is[String](_ == id)) / 'contacts / 'phone / element(0) / 'phoneNumber)).getOrElse(json.extract[String]('parties / 'person / filter('id.is[String](_ == id)) / 'contacts / 'phone / 'phoneNumber)) }
+                              { json.extract[String]('parties / 'person / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'contacts / 'phone / arrayOrSingletonAsArray / element(0) / 'phoneNumber) }
                             </Telephone>
                           </DirectoryEntry>
                         }

@@ -21,7 +21,7 @@ object Main extends App with SimpleRoutingApp {
 
   val config = ConfigFactory.load
   val title = config.getString("title")
-  val serverIP = config.getString("serverIP")
+  val hostname = config.getString("hostname")
 
   val capsuleUrl = config.getString("capsulecrm.url")
   val capsuleToken = config.getString("capsulecrm.token")
@@ -46,11 +46,11 @@ object Main extends App with SimpleRoutingApp {
               <Prompt>Search Capsule CRM</Prompt>
               <MenuItem>
                 <Name>Search by name</Name>
-                <URL>http://{ serverIP }/inputname.xml</URL>
+                <URL>http://{ hostname }/inputname.xml</URL>
               </MenuItem>
               <MenuItem>
                 <Name>Search by tag</Name>
-                <URL>http://{ serverIP }/inputtag.xml</URL>
+                <URL>http://{ hostname }/inputtag.xml</URL>
               </MenuItem>
             </CiscoIPPhoneMenu>
         }
@@ -61,7 +61,7 @@ object Main extends App with SimpleRoutingApp {
               <CiscoIPPhoneInput>
                 <Title>{ title }</Title>
                 <Prompt>Search by name</Prompt>
-                <URL>http://{ serverIP }/search.xml</URL>
+                <URL>http://{ hostname }/search.xml</URL>
                 <InputItem>
                   <DisplayName>Enter the name</DisplayName>
                   <QueryStringParam>q</QueryStringParam>
@@ -76,7 +76,7 @@ object Main extends App with SimpleRoutingApp {
               <CiscoIPPhoneInput>
                 <Title>{ title }</Title>
                 <Prompt>Search by tag</Prompt>
-                <URL>http://{ serverIP }/search.xml</URL>
+                <URL>http://{ hostname }/search.xml</URL>
                 <InputItem>
                   <DisplayName>Enter the tag</DisplayName>
                   <QueryStringParam>tag</QueryStringParam>
@@ -101,8 +101,12 @@ object Main extends App with SimpleRoutingApp {
 
                     val json = JsonParser(response.entity.asString)
 
-                    val organisationArrayIds = 'parties / optionalField("organisation") / arrayOrSingletonAsArray / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
-                    val personArrayIds = 'parties / optionalField("person") / arrayOrSingletonAsArray / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
+                    val organisations = 'parties / optionalField("organisation") / arrayOrSingletonAsArray
+                    val persons = 'parties / optionalField("person") / arrayOrSingletonAsArray
+                    val firstPhoneNumber = 'contacts / 'phone / arrayOrSingletonAsArray / element(0) / 'phoneNumber
+
+                    val organisationArrayIds = organisations / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
+                    val personArrayIds = persons / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
 
                     ctx.complete(OK,
                       """<?xml version="1.0" encoding="utf-8" ?>""" +
@@ -113,10 +117,10 @@ object Main extends App with SimpleRoutingApp {
                             for (id <- json.extract[String](organisationArrayIds)) yield {
                               <DirectoryEntry>
                                 <Name>
-                                  { json.extract[String]('parties / 'organisation / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'name) }
+                                  { json.extract[String](organisations / filter('id.is[String](_ == id)) / 'name) }
                                 </Name>
                                 <Telephone>
-                                  { json.extract[String]('parties / 'organisation / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'contacts / 'phone / arrayOrSingletonAsArray / element(0) / 'phoneNumber) }
+                                  { json.extract[String](organisations / filter('id.is[String](_ == id)) / firstPhoneNumber) }
                                 </Telephone>
                               </DirectoryEntry>
                             }
@@ -125,16 +129,16 @@ object Main extends App with SimpleRoutingApp {
                             for (id <- json.extract[String](personArrayIds)) yield {
                               <DirectoryEntry>
                                 <Name>
-                                  { json.extract[String]('parties / 'person / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'firstName) }
-                                  { json.extract[String]('parties / 'person / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'lastName) }{
-                                    json.extract[String]('parties / 'person / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / optionalField("organisationName")).headOption match {
+                                  { json.extract[String](persons / filter('id.is[String](_ == id)) / 'firstName) }
+                                  { json.extract[String](persons / filter('id.is[String](_ == id)) / 'lastName) }{
+                                    json.extract[String](persons / filter('id.is[String](_ == id)) / optionalField("organisationName")).headOption match {
                                       case None => ""
                                       case Some(on) => " at " + on
                                     }
                                   }
                                 </Name>
                                 <Telephone>
-                                  { json.extract[String]('parties / 'person / arrayOrSingletonAsArray / filter('id.is[String](_ == id)) / 'contacts / 'phone / arrayOrSingletonAsArray / element(0) / 'phoneNumber) }
+                                  { json.extract[String](persons / filter('id.is[String](_ == id)) / firstPhoneNumber) }
                                 </Telephone>
                               </DirectoryEntry>
                             }

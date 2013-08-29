@@ -11,10 +11,11 @@ Java 6 or later. A Capsule CRM account and token.
 
 ### Configuration
 
-In `conf/application.conf`, add your Capsule CRM URL and Capsule CRM API token.
+In `conf/application.conf`, add your server hostname or IP address, Capsule CRM URL and Capsule CRM API token.
 Capsule CRM users can find their API token by visiting `My Preferences` via their username menu in the Capsule navigation bar.
 
 ```ruby
+hostname=capsulecisco.coen.co.uk
 capsulecrm.url="https://<yourdomain>.capsulecrm.com"
 capsulecrm.token="<your token here>"
 ```

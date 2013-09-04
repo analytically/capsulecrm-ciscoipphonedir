@@ -90,8 +90,8 @@ object Main extends App with SimpleRoutingApp {
             parameters('q ?, 'tag ?) { (q, tag) =>
               ctx =>
                 val queryString = q match {
-                  case Some(query) => "q=" + query
-                  case None => "tag=" + tag.getOrElse("")
+                  case Some(query) => s"q=$query"
+                  case None => s"tag=${tag.getOrElse("")}"
                 }
 
                 capsulePipeline(Get(s"$capsuleUrl/api/party?$queryString")).onSuccess {

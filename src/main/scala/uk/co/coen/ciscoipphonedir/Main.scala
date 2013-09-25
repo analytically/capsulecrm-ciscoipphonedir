@@ -20,22 +20,22 @@ object Main extends App with SimpleRoutingApp {
   implicit val system = ActorSystem("capsule-cisco")
   implicit val executionContext = system.dispatcher
 
+  val interface = system.settings.config.getString("http.interface")
+  val port = system.settings.config.getInt("http.port")
+
   val config = ConfigFactory.load
   val title = config.getString("title")
   val hostname = config.getString("hostname")
 
-  val capsuleUrl = Uri(s"${config.getString("capsulecrm.url")}/api/party")
+  val capsuleUri = Uri(s"${config.getString("capsulecrm.url")}/api/party")
   val capsuleToken = config.getString("capsulecrm.token")
 
   val capsulePipeline: HttpRequest => Future[HttpResponse] = (
-    addCredentials(BasicHttpCredentials(capsuleToken, "x"))
+    addCredentials(BasicHttpCredentials(capsuleToken, ""))
     ~> addHeader("Accept", "application/json")
     ~> sendReceive)
 
-  val interface = system.settings.config.getString("http.interface")
-  val port = system.settings.config.getInt("http.port")
-
-  val simpleCache = routeCache(maxCapacity = 1000, timeToIdle = Duration("30 min"))
+  val simpleCache = routeCache(maxCapacity = 5000, timeToIdle = Duration("30 min"))
 
   startServer(interface, port) {
     (get & respondWithMediaType(`text/xml`)) {
@@ -91,8 +91,8 @@ object Main extends App with SimpleRoutingApp {
             parameters('q ?, 'tag ?) { (q, tag) =>
               ctx =>
                 val uri = q match {
-                  case Some(query) => capsuleUrl.copy(query = Query("q" -> query))
-                  case None => capsuleUrl.copy(query = Query("tag" -> tag.getOrElse("")))
+                  case Some(query) => capsuleUri.copy(query = Query("q" -> query))
+                  case None => capsuleUri.copy(query = Query("tag" -> tag.getOrElse("")))
                 }
 
                 capsulePipeline(Get(uri)).onSuccess {

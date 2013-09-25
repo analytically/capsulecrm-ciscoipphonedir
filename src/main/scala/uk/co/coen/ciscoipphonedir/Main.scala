@@ -14,6 +14,7 @@ import spray.http.HttpResponse
 import MediaTypes._
 import spray.routing.directives.CachingDirectives._
 import scala.concurrent.duration.Duration
+import spray.http.Uri._
 
 object Main extends App with SimpleRoutingApp {
   implicit val system = ActorSystem("capsule-cisco")
@@ -23,7 +24,7 @@ object Main extends App with SimpleRoutingApp {
   val title = config.getString("title")
   val hostname = config.getString("hostname")
 
-  val capsuleUrl = config.getString("capsulecrm.url")
+  val capsuleUrl = Uri(s"${config.getString("capsulecrm.url")}/api/party")
   val capsuleToken = config.getString("capsulecrm.token")
 
   val capsulePipeline: HttpRequest => Future[HttpResponse] = (
@@ -89,12 +90,12 @@ object Main extends App with SimpleRoutingApp {
           alwaysCache(simpleCache) {
             parameters('q ?, 'tag ?) { (q, tag) =>
               ctx =>
-                val queryString = q match {
-                  case Some(query) => s"q=$query"
-                  case None => s"tag=${tag.getOrElse("")}"
+                val uri = q match {
+                  case Some(query) => capsuleUrl.copy(query = Query("q" -> query))
+                  case None => capsuleUrl.copy(query = Query("tag" -> tag.getOrElse("")))
                 }
 
-                capsulePipeline(Get(s"$capsuleUrl/api/party?$queryString")).onSuccess {
+                capsulePipeline(Get(uri)).onSuccess {
                   case response: HttpResponse =>
                     import spray.json.lenses.JsonLenses._
                     import DefaultJsonProtocol._

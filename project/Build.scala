@@ -31,7 +31,7 @@ object Build extends sbt.Build {
     organizationHomepage := Some(new URL("http://www.coen.co.uk")),
     description := "Search Capsule CRM from your Cisco IP phone",
     startYear := Some(2013),
-    scalaVersion := "2.10.2",
+    scalaVersion := "2.10.3",
     scalacOptions := Seq(
       "-encoding", "utf8",
       "-unchecked",

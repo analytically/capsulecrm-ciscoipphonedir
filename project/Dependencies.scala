@@ -18,7 +18,7 @@ object Dependencies {
 
   object V {
     val akka = "2.2.1"
-    val spray = "1.2-20130912"
+    val spray = "1.2-20130928"
   }
 
   // Utilities

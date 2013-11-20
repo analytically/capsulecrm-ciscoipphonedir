@@ -35,7 +35,7 @@ object Main extends App with SimpleRoutingApp {
     ~> addHeader("Accept", "application/json")
     ~> sendReceive)
 
-  val simpleCache = routeCache(maxCapacity = 5000, timeToIdle = Duration("30 min"))
+  val simpleCache = routeCache(maxCapacity = 5000, timeToIdle = Duration("10 min"))
 
   startServer(interface, port) {
     (get & respondWithMediaType(`text/xml`)) {
@@ -130,8 +130,7 @@ object Main extends App with SimpleRoutingApp {
                             for (id <- json.extract[String](personArrayIds)) yield {
                               <DirectoryEntry>
                                 <Name>
-                                  { json.extract[String](persons / filter('id.is[String](_ == id)) / 'firstName) }
-                                  { json.extract[String](persons / filter('id.is[String](_ == id)) / 'lastName) }{
+                                  { json.extract[String](persons / filter('id.is[String](_ == id)) / 'firstName) } { json.extract[String](persons / filter('id.is[String](_ == id)) / 'lastName) } {
                                     json.extract[String](persons / filter('id.is[String](_ == id)) / optionalField("organisationName")).headOption match {
                                       case None => ""
                                       case Some(on) => " at " + on

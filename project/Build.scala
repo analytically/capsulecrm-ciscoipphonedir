@@ -1,16 +1,30 @@
+import com.typesafe.sbt.SbtScalariform
+import com.typesafe.sbt.SbtScalariform.ScalariformKeys
 import sbt._
 import Keys._
 import sbtassembly.Plugin.AssemblyKeys._
 import scala.Some
 
 object Build extends sbt.Build {
+
   import Dependencies._
+
+  lazy val formatSettings = SbtScalariform.scalariformSettings ++ Seq(
+    ScalariformKeys.preferences in Compile := formattingPreferences,
+    ScalariformKeys.preferences in Test := formattingPreferences
+  )
+
+  def formattingPreferences = {
+    import scalariform.formatter.preferences._
+    FormattingPreferences()
+  }
 
   lazy val buildVersion = "1.0.0-SNAPSHOT"
 
   lazy val root = Project(id = "capsulecrm-ciscoipphonedir", base = file("."))
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .settings(sbtassembly.Plugin.assemblySettings: _*)
+    // .settings(formatSettings: _*) - use carefully, screws up XML
     .settings(
     version := buildVersion,
     organization := "uk.co.coen",

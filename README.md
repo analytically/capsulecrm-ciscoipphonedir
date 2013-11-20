@@ -5,6 +5,10 @@ Search [Capsule CRM](http://capsulecrm.com/) from your [Cisco IP phone](http://w
 
 Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@analytically](http://twitter.com/analytically) for updates.
 
+![screenshot1](images/screenshot1.jpg)
+![screenshot2](images/screenshot2.jpg)
+![screenshot3](images/screenshot3.jpg)
+
 ### Requirements
 
 Java 6 or later. A Capsule CRM account and token.
@@ -32,13 +36,24 @@ sbt assembly
 java -jar target/scala-2.10/capsule-cisco.jar
 ```
 
+Running with [authbind](http://mutelight.org/authbind):
+
+```
+authbind --deep java -Djava.net.preferIPv4Stack -jar target/scala-2.10/capsule-cisco.jar
+```
+
 ### Cisco IP Phone Setup
 
-Todo
+  - Go to your phone's `Configuration Utility`
+  - Click `Admin login` and `advanced`
+  - Go to the `Phone` tab
+  - Under `XML Service`, specify where you are running this script (e.g. `http://192.168.0.6/capsule.xml`) and click `Submit All Changes`:
 
-### Validated On
+![ciscoweb](images/ciscoweb.png)
 
-- Cisco SPA504G
+### Tested on
+
+  - Cisco SPA504G
 
 ### License
 

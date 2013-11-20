@@ -39,7 +39,7 @@ object Main extends App with SimpleRoutingApp {
 
   startServer(interface, port) {
     (get & respondWithMediaType(`text/xml`)) {
-      pathEnd {
+      path("capsule.xml") {
         complete {
           """<?xml version="1.0" encoding="utf-8" ?>""" +
             <CiscoIPPhoneMenu>

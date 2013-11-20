@@ -15,6 +15,7 @@ import MediaTypes._
 import spray.routing.directives.CachingDirectives._
 import scala.concurrent.duration.Duration
 import spray.http.Uri._
+import com.google.common.base.CharMatcher
 
 object Main extends App with SimpleRoutingApp {
   implicit val system = ActorSystem("capsule-cisco")
@@ -121,7 +122,7 @@ object Main extends App with SimpleRoutingApp {
                                   { json.extract[String](organisations / filter('id.is[String](_ == id)) / 'name) }
                                 </Name>
                                 <Telephone>
-                                  { json.extract[String](organisations / filter('id.is[String](_ == id)) / firstPhoneNumber) }
+                                  { CharMatcher.WHITESPACE.removeFrom(json.extract[String](organisations / filter('id.is[String](_ == id)) / firstPhoneNumber).head.toString()) }
                                 </Telephone>
                               </DirectoryEntry>
                             }
@@ -138,7 +139,7 @@ object Main extends App with SimpleRoutingApp {
                                   }
                                 </Name>
                                 <Telephone>
-                                  { json.extract[String](persons / filter('id.is[String](_ == id)) / firstPhoneNumber) }
+                                  { CharMatcher.WHITESPACE.removeFrom(json.extract[String](persons / filter('id.is[String](_ == id)) / firstPhoneNumber).head.toString()) }
                                 </Telephone>
                               </DirectoryEntry>
                             }

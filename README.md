@@ -10,6 +10,20 @@ Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@ana
 ![screenshot3](images/screenshot3.jpg)
 ![screenshot4](images/screenshot4.jpg)
 
+### Functionality
+
+  - Search your contacts (persons and organisations) straight from your phone
+  - Search your contacts by tag
+  - Saves your last 5 searches (per phone)
+  - Pagination through pressing the `Next` soft key
+  - Built using [spray](http://spray.io/), a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/) REST/HTTP toolkit, should easily support > 1000 connected phones
+
+Planned:
+
+  - Recently modified list
+  - Called ID recognition
+  - Add note upon incoming call
+
 ### Requirements
 
 Java 6 or later. A Capsule CRM account and token.
@@ -54,7 +68,7 @@ authbind --deep java -Djava.net.preferIPv4Stack -jar target/scala-2.10/capsule-c
 
 ### Tested on
 
-  - Cisco SPA504G
+  - [Cisco SPA504G](http://www.cisco.com/en/US/prod/collateral/voicesw/ps6788/phones/ps10499/data_sheet_c78-548564.html)
 
 ### License
 

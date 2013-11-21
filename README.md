@@ -15,7 +15,7 @@ Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@ana
   - Search your contacts (persons and organisations) straight from your phone
   - Search your contacts by tag
   - Saves your last 5 searches (per phone)
-  - Pagination through pressing the `Next` soft key
+  - Pagination through pressing the `next` soft key
   - Built using [spray](http://spray.io/), a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/) REST/HTTP toolkit, should easily support > 1000 connected phones
 
 Planned:
@@ -44,6 +44,8 @@ capsulecrm.token="<your token here>"
 ```
 sbt assembly
 ```
+
+This builds a single, executable 'fat' jar.
 
 ### Running
 

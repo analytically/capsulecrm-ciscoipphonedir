@@ -1,4 +1,4 @@
-capsulecrm-ciscoipphonedir [![Build Status](https://travis-ci.org/coenrecruitment/capsulecrm-ciscoipphonedir.png)](https://travis-ci.org/coenrecruitment/capsulecrm-ciscoipphonedir)
+capsulecrm-ciscoipphonedir [![Build Status](https://travis-ci.org/analytically/capsulecrm-ciscoipphonedir.png)](https://travis-ci.org/analytically/capsulecrm-ciscoipphonedir)
 ==========================
 
 Search [Capsule CRM](http://capsulecrm.com/) from your [Cisco IP phone](http://www.cisco.com/cisco/web/solutions/small_business/products/voice_conferencing/SPA_500/index.html). Uses Capsule CRM [REST API](http://developer.capsulecrm.com/).

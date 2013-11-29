@@ -20,15 +20,15 @@ import scala.collection._
 import mutable.ListBuffer
 import spray.http.HttpHeaders.RawHeader
 
-class UniqueFixedList[A](max: Int) extends Traversable[A] {
+class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
   val list: ListBuffer[A] = ListBuffer()
 
   def +=(elem: A): this.type = {
     if (!list.contains(elem)) {
-      if (list.size == max) {
-        list.trimStart(1)
+      if (list.size == maxSize) {
+        list.trimEnd(1)
       }
-      list.append(elem)
+      list.prepend(elem)
     }
     this
   }
@@ -41,11 +41,11 @@ object Main extends App with SimpleRoutingApp {
   implicit val executionContext = system.dispatcher
 
   val newlines = CharMatcher.is('\n')
+  val config = system.settings.config
 
-  val interface = system.settings.config.getString("http.interface")
-  val port = system.settings.config.getInt("http.port")
+  val interface = config.getString("http.interface")
+  val port = config.getInt("http.port")
 
-  val config = ConfigFactory.load
   val title = config.getString("title")
   val hostname = config.getString("hostname")
 
@@ -57,7 +57,7 @@ object Main extends App with SimpleRoutingApp {
     ~> addHeader("Accept", "application/json")
     ~> sendReceive)
 
-  val lastSearches = mutable.Map[RemoteAddress, UniqueFixedList[String]]()
+  val lastSearches = mutable.Map[RemoteAddress, DistinctEvictingList[String]]()
   val simpleCache = routeCache(maxCapacity = 5000, timeToIdle = Duration("10 min"))
 
   startServer(interface, port) {
@@ -124,7 +124,7 @@ object Main extends App with SimpleRoutingApp {
                 ctx =>
                   val uri = q match {
                     case Some(query) =>
-                      lastSearches += (ip -> (lastSearches.getOrElse(ip, new UniqueFixedList[String](5)) += query))
+                      lastSearches += (ip -> (lastSearches.getOrElse(ip, new DistinctEvictingList[String](5)) += query))
                       capsuleUri.copy(query = Query("q" -> query, "start" -> start.getOrElse(0).toString, "limit" -> "25"))
                     case None => capsuleUri.copy(query = Query("tag" -> tag.getOrElse("")))
                   }

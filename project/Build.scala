@@ -19,7 +19,7 @@ object Build extends sbt.Build {
     FormattingPreferences()
   }
 
-  lazy val buildVersion = "1.0.0-SNAPSHOT"
+  lazy val buildVersion = "1.0.0"
 
   lazy val root = Project(id = "capsulecrm-ciscoipphonedir", base = file("."))
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)

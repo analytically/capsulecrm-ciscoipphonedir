@@ -28,35 +28,26 @@ Planned:
 
 Java 6 or later. A Capsule CRM account and token.
 
-### Configuration
-
-In `conf/application.conf`, add your server hostname or IP address, Capsule CRM URL and Capsule CRM API token.
-Capsule CRM users can find their API token by visiting `My Preferences` via their username menu in the Capsule navigation bar.
-
-```ruby
-hostname=capsulecisco.coen.co.uk
-capsulecrm.url="https://<yourdomain>.capsulecrm.com"
-capsulecrm.token="<your token here>"
-```
-
-### Building
+### Building (optional)
 
 ```
 sbt assembly
 ```
 
-This builds a single, executable 'fat' jar.
+This builds a single, executable 'fat' jar in `target/scala-2.10`.
 
 ### Running
 
+Capsule CRM users can find their API token by visiting `My Preferences` via their username menu in the Capsule navigation bar.
+
 ```
-java -jar target/scala-2.10/capsule-cisco.jar
+java -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://<yourdomain>.capsulecrm.com -Dcapsulrcrm.token=1234 -jar capsule-cisco.jar
 ```
 
 Running with [authbind](http://mutelight.org/authbind):
 
 ```
-authbind --deep java -Djava.net.preferIPv4Stack -jar target/scala-2.10/capsule-cisco.jar
+authbind --deep java -Dhostname=capsulecisco.coen.co.uk -Dhttp.port=80 -Dcapsulecrm.url=https://<yourdomain>.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar
 ```
 
 ### Cisco IP Phone Setup

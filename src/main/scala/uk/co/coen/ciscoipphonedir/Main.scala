@@ -124,7 +124,7 @@ object Main extends App with SimpleRoutingApp {
                 ctx =>
                   val uri = q match {
                     case Some(query) =>
-                      lastSearches += (ip -> (lastSearches.getOrElse(ip, new DistinctEvictingList[String](5)) += query))
+                      lastSearches += (ip -> (lastSearches.getOrElse(ip, new DistinctEvictingList[String](10)) += query))
                       capsuleUri.copy(query = Query("q" -> query, "start" -> start.getOrElse(0).toString, "limit" -> "25"))
                     case None => capsuleUri.copy(query = Query("tag" -> tag.getOrElse("")))
                   }

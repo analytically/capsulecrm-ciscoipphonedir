@@ -1,7 +1,7 @@
 capsulecrm-ciscoipphonedir [![Build Status](https://travis-ci.org/analytically/capsulecrm-ciscoipphonedir.png)](https://travis-ci.org/analytically/capsulecrm-ciscoipphonedir)
 ==========================
 
-Search [Capsule CRM](http://capsulecrm.com/) from your [Cisco IP phone](http://www.cisco.com/cisco/web/solutions/small_business/products/voice_conferencing/SPA_500/index.html). Uses Capsule CRM [REST API](http://developer.capsulecrm.com/).
+Use [Capsule CRM](http://capsulecrm.com/) on a [Cisco IP phone](http://www.cisco.com/cisco/web/solutions/small_business/products/voice_conferencing/SPA_500/index.html). Uses Capsule CRM [REST API](http://developer.capsulecrm.com/).
 
 Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@analytically](http://twitter.com/analytically) for updates.
 
@@ -20,9 +20,7 @@ Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@ana
 
 Planned:
 
-  - Recently modified list
-  - Called ID recognition
-  - Add note upon incoming call
+  - Access the recently modified list
 
 ### Requirements
 
@@ -38,7 +36,8 @@ This builds a single, executable 'fat' jar in `target/scala-2.10`.
 
 ### Running
 
-Capsule CRM users can find their API token by visiting `My Preferences` via their username menu in the Capsule navigation bar.
+Prebuilt releases are available [here](https://github.com/analytically/capsulecrm-ciscoipphonedir/releases). Capsule CRM
+users can find their API token by visiting `My Preferences` via their username menu in the Capsule navigation bar.
 
 ```
 java -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulrcrm.token=1234 -jar capsule-cisco.jar
@@ -50,9 +49,9 @@ Running with [authbind](http://mutelight.org/authbind):
 authbind --deep java -Dhttp.port=80 -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar
 ```
 
-#### HTTPS?
+##### HTTPS?
 
-Unfortunately Cisco's IP phones do not support XML services over HTTPS.
+Unfortunately Cisco IP phones do not support XML services over HTTPS.
 
 ### Cisco IP Phone Setup
 
@@ -71,4 +70,4 @@ Unfortunately Cisco's IP phones do not support XML services over HTTPS.
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-Copyright 2013 Coen Recruitment Ltd - www.coen.co.uk.
+Copyright 2013 [Mathias Bogaert](mailto:mathias.bogaert@gmail.com).

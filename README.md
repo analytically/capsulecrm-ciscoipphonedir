@@ -41,14 +41,18 @@ This builds a single, executable 'fat' jar in `target/scala-2.10`.
 Capsule CRM users can find their API token by visiting `My Preferences` via their username menu in the Capsule navigation bar.
 
 ```
-java -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://<yourdomain>.capsulecrm.com -Dcapsulrcrm.token=1234 -jar capsule-cisco.jar
+java -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulrcrm.token=1234 -jar capsule-cisco.jar
 ```
 
 Running with [authbind](http://mutelight.org/authbind):
 
 ```
-authbind --deep java -Dhostname=capsulecisco.coen.co.uk -Dhttp.port=80 -Dcapsulecrm.url=https://<yourdomain>.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar
+authbind --deep java -Dhttp.port=80 -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar
 ```
+
+#### HTTPS?
+
+Unfortunately Cisco's IP phones do not support XML services over HTTPS.
 
 ### Cisco IP Phone Setup
 

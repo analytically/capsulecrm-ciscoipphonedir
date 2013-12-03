@@ -37,12 +37,7 @@ class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
 }
 
 object Main extends App with SimpleRoutingApp {
-  implicit val system = ActorSystem("capsule-cisco")
-  sys.addShutdownHook(system.shutdown())
-  implicit val executionContext = system.dispatcher
-
-  val newlines = CharMatcher.is('\n')
-  val config = system.settings.config
+  val config = ConfigFactory.load
 
   val interface = config.getString("http.interface")
   val port = config.getInt("http.port")
@@ -52,6 +47,12 @@ object Main extends App with SimpleRoutingApp {
 
   val capsuleUri = Uri(s"${config.getString("capsulecrm.url")}/api/party")
   val capsuleToken = config.getString("capsulecrm.token")
+
+  implicit val system = ActorSystem("capsule-cisco", config)
+  sys.addShutdownHook(system.shutdown())
+  implicit val executionContext = system.dispatcher
+
+  val newlines = CharMatcher.is('\n')
 
   val capsulePipeline: HttpRequest => Future[HttpResponse] = (
     addCredentials(BasicHttpCredentials(capsuleToken, ""))

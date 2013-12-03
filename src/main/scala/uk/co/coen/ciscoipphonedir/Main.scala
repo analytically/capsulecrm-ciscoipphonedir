@@ -38,6 +38,7 @@ class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
 
 object Main extends App with SimpleRoutingApp {
   implicit val system = ActorSystem("capsule-cisco")
+  sys.addShutdownHook(system.shutdown())
   implicit val executionContext = system.dispatcher
 
   val newlines = CharMatcher.is('\n')
@@ -61,7 +62,7 @@ object Main extends App with SimpleRoutingApp {
   val simpleCache = routeCache(maxCapacity = 5000, timeToIdle = Duration("10 min"))
 
   startServer(interface, port) {
-    (get & respondWithMediaType(`text/xml`) & clientIP) { ip =>
+    (get & compressResponseIfRequested() & respondWithMediaType(`text/xml`) & clientIP) { ip =>
       path("capsule.xml") {
         complete {
           """<?xml version="1.0" encoding="utf-8" ?>""" +
@@ -119,13 +120,14 @@ object Main extends App with SimpleRoutingApp {
         } ~
         path("search.xml") {
           alwaysCache(simpleCache) {
-            parameters('q ?, 'tag ?, 'start.as[Int] ?) { (q, tag, start) =>
-              respondWithHeader(RawHeader("Refresh", s"100;url=http://$hostname/search.xml?q=${q.orElse(tag).get}&start=${start.getOrElse(0) + 25}")) {
+            parameters('q ?, 'tag ?, 'start.as[Int] ? 0) { (q, tag, start) =>
+              validate(start >= 0, errorMsg = s"start parameter must be positive: $start")
+              respondWithHeader(RawHeader("Refresh", s"100;url=http://$hostname/search.xml?q=${q.orElse(tag).get}&start=${start + 25}")) {
                 ctx =>
                   val uri = q match {
                     case Some(query) =>
                       lastSearches += (ip -> (lastSearches.getOrElse(ip, new DistinctEvictingList[String](10)) += query))
-                      capsuleUri.copy(query = Query("q" -> query, "start" -> start.getOrElse(0).toString, "limit" -> "25"))
+                      capsuleUri.copy(query = Query("q" -> query, "start" -> start.toString, "limit" -> "25"))
                     case None => capsuleUri.copy(query = Query("tag" -> tag.getOrElse("")))
                   }
 
@@ -164,7 +166,7 @@ object Main extends App with SimpleRoutingApp {
                                     { json.extract[String](persons / filter('id.is[String](_ == id)) / 'firstName) } { json.extract[String](persons / filter('id.is[String](_ == id)) / 'lastName) } {
                                       json.extract[String](persons / filter('id.is[String](_ == id)) / optionalField("organisationName")).headOption match {
                                         case None => ""
-                                        case Some(on) => " at " + on
+                                        case Some(on) => s" at $on"
                                       }
                                     }
                                   </Name>

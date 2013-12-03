@@ -6,7 +6,6 @@ import sbtassembly.Plugin.AssemblyKeys._
 import scala.Some
 
 object Build extends sbt.Build {
-
   import Dependencies._
 
   lazy val formatSettings = SbtScalariform.scalariformSettings ++ Seq(
@@ -19,7 +18,7 @@ object Build extends sbt.Build {
     FormattingPreferences()
   }
 
-  lazy val buildVersion = "1.0.0"
+  lazy val buildVersion = "1.0.1"
 
   lazy val root = Project(id = "capsulecrm-ciscoipphonedir", base = file("."))
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
@@ -27,11 +26,10 @@ object Build extends sbt.Build {
     // .settings(formatSettings: _*) - use carefully, screws up XML
     .settings(
     version := buildVersion,
-    organization := "uk.co.coen",
-    organizationName := "Coen Recruitment",
-    organizationHomepage := Some(new URL("http://www.coen.co.uk")),
-    description := "Search Capsule CRM from your Cisco IP phone",
+    homepage := Some(new URL("https://github.com/analytically/capsulecrm-ciscoipphonedir")),
+    description := "Use Capsule CRM on a Cisco IP phone",
     startYear := Some(2013),
+    licenses := Seq("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
     scalaVersion := "2.10.3",
     scalacOptions := Seq(
       "-encoding", "utf8",
@@ -46,37 +44,7 @@ object Build extends sbt.Build {
     resolvers += Resolver.sonatypeRepo("releases"),
     resolvers += Resolver.sonatypeRepo("snapshots"),
     resolvers ++= Dependencies.nonStandardRepos,
-    shellPrompt := ShellPrompt.buildShellPrompt,
     libraryDependencies ++=
       compile(scalalogging, jsonLenses, guava, jsr305, sprayCan, sprayRouting, sprayCaching, sprayClient, akkaSlf4j, logbackClassic)
   )
-}
-
-// Shell prompt which show the current project and git branch
-object ShellPrompt {
-  object devnull extends ProcessLogger {
-    def info(s: => String) {}
-    def error(s: => String) {}
-    def buffer[T](f: => T): T = f
-  }
-
-  val buildShellPrompt = {
-    val LGREEN = "\033[1;32m"
-    val LBLUE = "\033[01;34m"
-
-    (state: State) => {
-      val currProject = Project.extract(state).currentProject.id
-      if (System.getProperty("sbt.nologformat", "false") != "true") {
-        def currBranch = (
-          ("git status -sb" lines_! devnull headOption)
-            getOrElse "-" stripPrefix "## "
-          )
-
-        "%s%s%s:%s%s%s » ".format(LBLUE, currProject, scala.Console.WHITE, LGREEN, currBranch, scala.Console.WHITE)
-      }
-      else {
-        "%s%s%s » ".format(LBLUE, currProject, scala.Console.WHITE)
-      }
-    }
-  }
 }

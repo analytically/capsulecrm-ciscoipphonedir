@@ -16,7 +16,8 @@ Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@ana
   - Search your contacts by tag
   - Saves your last 10 searches (per phone)
   - Pagination through pressing the `next` soft key
-  - Built using [spray](http://spray.io/), a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/) REST/HTTP toolkit, should easily support > 1000 connected phones
+  - Built using [spray](http://spray.io/) 1.2, a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/)
+    REST/HTTP toolkit, should easily support > 1000 connected phones
 
 Planned:
 
@@ -36,14 +37,15 @@ This builds a single, executable 'fat' jar in `target/scala-2.10`.
 
 ### Running
 
-Prebuilt releases are available [here](https://github.com/analytically/capsulecrm-ciscoipphonedir/releases). Capsule CRM
-users can find their API token by visiting `My Preferences` via their username menu in the Capsule navigation bar.
+Prebuilt releases are available [here](https://github.com/analytically/capsulecrm-ciscoipphonedir/releases).
+Requires [Java 7](http://java.com/en/download/index.jsp). Capsule CRM users can find their API token by visiting
+`My Preferences` via their username menu in the Capsule navigation bar.
 
 ```
 java -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulrcrm.token=1234 -jar capsule-cisco.jar
 ```
 
-Running with [authbind](http://mutelight.org/authbind):
+Running with [authbind](http://mutelight.org/authbind) on Debian/Ubuntu:
 
 ```
 authbind --deep java -Dhttp.port=80 -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar

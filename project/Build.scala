@@ -37,7 +37,7 @@ object Build extends sbt.Build {
       "-feature",
       "-language:postfixOps",
       "-deprecation",
-      "-target:jvm-1.6"),
+      "-target:jvm-1.7"),
     jarName in assembly := "capsule-cisco.jar",
     resolvers += Resolver.typesafeRepo("releases"),
     resolvers += Resolver.typesafeRepo("snapshots"),

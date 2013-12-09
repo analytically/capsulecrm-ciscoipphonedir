@@ -25,7 +25,7 @@ Planned:
 
 ### Requirements
 
-Java 6 or later. A Capsule CRM account and token.
+Java 7 or later. A Capsule CRM account and token.
 
 ### Building (optional)
 
@@ -42,7 +42,7 @@ Requires [Java 7](http://java.com/en/download/index.jsp). Capsule CRM users can 
 `My Preferences` via their username menu in the Capsule navigation bar.
 
 ```
-java -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulrcrm.token=1234 -jar capsule-cisco.jar
+java -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -jar capsule-cisco.jar
 ```
 
 Running with [authbind](http://mutelight.org/authbind) on Debian/Ubuntu:

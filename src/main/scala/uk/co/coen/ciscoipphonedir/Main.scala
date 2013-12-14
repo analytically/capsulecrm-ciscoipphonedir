@@ -5,7 +5,7 @@ import com.typesafe.config.ConfigFactory
 import spray.http._
 import scala.concurrent.Future
 import spray.client.pipelining._
-import spray.routing.SimpleRoutingApp
+import spray.routing.{Directive0, SimpleRoutingApp}
 import spray.json.{ JsValue, JsonParser, DefaultJsonProtocol }
 import spray.http.StatusCodes._
 import spray.http.HttpRequest
@@ -19,6 +19,8 @@ import com.google.common.base.CharMatcher
 import scala.collection._
 import mutable.ListBuffer
 import spray.http.HttpHeaders.RawHeader
+import com.google.common.util.concurrent.RateLimiter
+import spray.routing.directives.BasicDirectives
 
 class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
   val list: ListBuffer[A] = ListBuffer()
@@ -36,7 +38,28 @@ class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
   def foreach[U](f: A => U) = list.foreach(f)
 }
 
-object Main extends App with SimpleRoutingApp {
+trait CapsuleDirectives extends BasicDirectives {
+  val rateLimiters = mutable.Map[RemoteAddress, RateLimiter]()
+
+  def rateLimit(ip: RemoteAddress, rateLimit: Int): Directive0 = {
+    mapInnerRoute {
+      inner =>
+        ctx =>
+          val rateLimiter = rateLimiters.getOrElseUpdate(ip, RateLimiter.create(rateLimit))
+
+          if (rateLimiter.tryAcquire(1)) {
+            inner(ctx.withHttpResponseHeadersMapped(
+              headers => RawHeader("X-RateLimit-Limit", rateLimit.toString) :: headers
+            ))
+          }
+          else {
+            ctx.complete(TooManyRequests, s"You have exceeded your rate limit of $rateLimit requests/second. You need to slow down the rate at which you are sending your requests.")
+          }
+    }
+  }
+}
+
+object Main extends App with SimpleRoutingApp with CapsuleDirectives {
   val config = ConfigFactory.load
 
   val interface = config.getString("http.interface")
@@ -44,6 +67,7 @@ object Main extends App with SimpleRoutingApp {
 
   val title = config.getString("title")
   val hostname = config.getString("hostname")
+  val rateLimit = config.getInt("ratelimit")
 
   val capsuleUri = Uri(s"${config.getString("capsulecrm.url")}/api/party")
   val capsuleToken = config.getString("capsulecrm.token")
@@ -60,7 +84,7 @@ object Main extends App with SimpleRoutingApp {
     ~> sendReceive)
 
   val lastSearches = mutable.Map[RemoteAddress, DistinctEvictingList[String]]()
-  val simpleCache = routeCache(maxCapacity = 5000, timeToIdle = Duration("10 min"))
+  val cache = routeCache(maxCapacity = 5000, timeToIdle = Duration("10 min"))
 
   startServer(interface, port) {
     (get & compressResponseIfRequested() & respondWithMediaType(`text/xml`) & clientIP) { ip =>
@@ -120,7 +144,7 @@ object Main extends App with SimpleRoutingApp {
           }
         } ~
         path("search.xml") {
-          alwaysCache(simpleCache) {
+          (rateLimit(ip, rateLimit) & alwaysCache(cache)) {
             parameters('q ?, 'tag ?, 'start.as[Int] ? 0) { (q, tag, start) =>
               validate(start >= 0, errorMsg = s"start parameter must be positive: $start")
               respondWithHeader(RawHeader("Refresh", s"100;url=http://$hostname/search.xml?q=${q.orElse(tag).get}&start=${start + 25}")) {

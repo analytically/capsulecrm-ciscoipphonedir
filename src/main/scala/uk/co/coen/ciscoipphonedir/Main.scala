@@ -43,7 +43,7 @@ class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
 trait RateLimitDirectives extends BasicDirectives {
   val rateLimit: Int
 
-  private val rateLimiters = CacheBuilder.newBuilder().maximumSize(1000).expireAfterAccess(10, TimeUnit.MINUTES).build(
+  private val rateLimiters = CacheBuilder.newBuilder().maximumSize(5000).expireAfterAccess(10, TimeUnit.MINUTES).build(
     new CacheLoader[RemoteAddress, RateLimiter] {
       def load(key: RemoteAddress) = {
         RateLimiter.create(rateLimit)
@@ -54,17 +54,10 @@ trait RateLimitDirectives extends BasicDirectives {
     mapInnerRoute {
       inner =>
         ctx =>
-          val rateLimiter = rateLimiters.get(ip)
-          rateLimiter.setRate(rateLimit)
-
-          if (rateLimiter.tryAcquire()) {
-            inner(ctx.withHttpResponseHeadersMapped(
-              headers => RawHeader("X-RateLimit-Limit", rateLimit.toString) :: headers
-            ))
-          }
-          else {
-            ctx.complete(TooManyRequests, s"You have exceeded your rate limit of $rateLimit requests/second. You need to slow down the rate at which you are sending your requests.")
-          }
+          if (rateLimiters.get(ip).tryAcquire())
+            inner(ctx.withHttpResponseHeadersMapped(headers => RawHeader("X-RateLimit-Limit", rateLimit.toString) :: headers))
+          else
+            ctx.complete(TooManyRequests, s"You have exceeded your rate limit of $rateLimit requests/second.")
     }
   }
 }

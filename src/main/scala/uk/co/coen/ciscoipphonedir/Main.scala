@@ -6,7 +6,7 @@ import spray.http._
 import scala.concurrent.Future
 import spray.client.pipelining._
 import spray.routing.{Directive0, SimpleRoutingApp}
-import spray.json.{ JsValue, JsonParser, DefaultJsonProtocol }
+import spray.json.{ JsValue, JsonParser }
 import spray.http.StatusCodes._
 import spray.http.HttpRequest
 import scala.Some
@@ -21,6 +21,8 @@ import mutable.ListBuffer
 import spray.http.HttpHeaders.RawHeader
 import com.google.common.util.concurrent.RateLimiter
 import spray.routing.directives.BasicDirectives
+import com.google.common.cache.{CacheLoader, CacheBuilder}
+import java.util.concurrent.TimeUnit
 
 class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
   val list: ListBuffer[A] = ListBuffer()
@@ -38,16 +40,24 @@ class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
   def foreach[U](f: A => U) = list.foreach(f)
 }
 
-trait CapsuleDirectives extends BasicDirectives {
-  val rateLimiters = mutable.Map[RemoteAddress, RateLimiter]()
+trait RateLimitDirectives extends BasicDirectives {
+  val rateLimit: Int
 
-  def rateLimit(ip: RemoteAddress, rateLimit: Int): Directive0 = {
+  private val rateLimiters = CacheBuilder.newBuilder().maximumSize(1000).expireAfterAccess(10, TimeUnit.MINUTES).build(
+    new CacheLoader[RemoteAddress, RateLimiter] {
+      def load(key: RemoteAddress) = {
+        RateLimiter.create(rateLimit)
+      }
+    })
+
+  def rateLimit(ip: RemoteAddress): Directive0 = {
     mapInnerRoute {
       inner =>
         ctx =>
-          val rateLimiter = rateLimiters.getOrElseUpdate(ip, RateLimiter.create(rateLimit))
+          val rateLimiter = rateLimiters.get(ip)
+          rateLimiter.setRate(rateLimit)
 
-          if (rateLimiter.tryAcquire(1)) {
+          if (rateLimiter.tryAcquire()) {
             inner(ctx.withHttpResponseHeadersMapped(
               headers => RawHeader("X-RateLimit-Limit", rateLimit.toString) :: headers
             ))
@@ -59,7 +69,7 @@ trait CapsuleDirectives extends BasicDirectives {
   }
 }
 
-object Main extends App with SimpleRoutingApp with CapsuleDirectives {
+object Main extends App with SimpleRoutingApp with RateLimitDirectives {
   val config = ConfigFactory.load
 
   val interface = config.getString("http.interface")
@@ -144,7 +154,7 @@ object Main extends App with SimpleRoutingApp with CapsuleDirectives {
           }
         } ~
         path("search.xml") {
-          (rateLimit(ip, rateLimit) & alwaysCache(cache)) {
+          (rateLimit(ip) & alwaysCache(cache)) {
             parameters('q ?, 'tag ?, 'start.as[Int] ? 0) { (q, tag, start) =>
               validate(start >= 0, errorMsg = s"start parameter must be positive: $start")
               respondWithHeader(RawHeader("Refresh", s"100;url=http://$hostname/search.xml?q=${q.orElse(tag).get}&start=${start + 25}")) {
@@ -159,7 +169,6 @@ object Main extends App with SimpleRoutingApp with CapsuleDirectives {
                   capsulePipeline(Get(uri)).onSuccess {
                     case response: HttpResponse =>
                       import spray.json.lenses.JsonLenses._
-                      import DefaultJsonProtocol._
 
                       val json = JsonParser(response.entity.asString)
 

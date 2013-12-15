@@ -16,7 +16,7 @@ Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@ana
   - Search your contacts by tag
   - Saves your last 10 searches (per phone)
   - Pagination through pressing the `next` soft key
-  - Rate limiting (defaults to 5 requests/second per IP)
+  - Rate limiting (defaults to 5 requests/second per phone) to prevent abuse
   - Built using [spray](http://spray.io/) 1.2, a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/)
     REST/HTTP toolkit, should easily support > 1000 connected phones
 

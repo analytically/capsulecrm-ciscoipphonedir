@@ -6,7 +6,7 @@ import spray.http._
 import scala.concurrent.Future
 import spray.client.pipelining._
 import spray.routing.{Directive0, SimpleRoutingApp}
-import spray.json.{ JsValue, JsonParser }
+import spray.json.{DefaultJsonProtocol, JsValue, JsonParser}
 import spray.http.StatusCodes._
 import spray.http.HttpRequest
 import scala.Some
@@ -169,6 +169,7 @@ object Main extends App with SimpleRoutingApp with RateLimitDirectives {
                   capsulePipeline(Get(uri)).onSuccess {
                     case response: HttpResponse =>
                       import spray.json.lenses.JsonLenses._
+                      import DefaultJsonProtocol._
 
                       val json = JsonParser(response.entity.asString)
 

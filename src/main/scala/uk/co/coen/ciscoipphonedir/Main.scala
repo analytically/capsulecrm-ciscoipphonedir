@@ -92,7 +92,7 @@ object Main extends App with SimpleRoutingApp with RateLimitDirectives {
   startServer(interface, port) {
     (get & compressResponseIfRequested() & respondWithMediaType(`text/xml`) & clientIP) { ip =>
       path("ping") {
-        complete("pong")
+        complete("<pong/>")
       } ~
       path("capsule.xml") {
         complete {

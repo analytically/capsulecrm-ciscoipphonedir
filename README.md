@@ -43,13 +43,13 @@ Requires [Java 7](http://java.com/en/download/index.jsp). Capsule CRM users can 
 `My Preferences` via their username menu in the Capsule navigation bar.
 
 ```
-java -Dlogback.configurationFile=logback.production.xml -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -jar capsule-cisco.jar
+java -Dlogback.configurationFile=logback.production.xml -Dhostname=capsulecisco.coen.co.uk -Dhttp.interface=0.0.0.0 -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -jar capsule-cisco.jar
 ```
 
 Running with [authbind](http://mutelight.org/authbind) on Debian/Ubuntu:
 
 ```
-authbind --deep java -Dlogback.configurationFile=logback.production.xml -Dhttp.port=80 -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar
+authbind --deep java -Dlogback.configurationFile=logback.production.xml -Dhttp.interface=0.0.0.0 -Dhttp.port=80 -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar
 ```
 
 ##### HTTPS?

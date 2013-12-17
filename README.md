@@ -16,7 +16,7 @@ Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@ana
   - Search your contacts by tag
   - Saves your last 10 searches (per phone)
   - Pagination through pressing the `next` soft key
-  - Rate limiting (defaults to 5 requests/second per phone) to prevent abuse
+  - Rate limiting (defaults to 3 requests/second per phone) to prevent abuse
   - Built using [spray](http://spray.io/) 1.2, a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/)
     REST/HTTP toolkit, should easily support > 1000 connected phones
 
@@ -68,6 +68,25 @@ Unfortunately Cisco IP phones do not support XML services over HTTPS.
 ### Tested on
 
   - [Cisco SPA504G](http://www.cisco.com/en/US/prod/collateral/voicesw/ps6788/phones/ps10499/data_sheet_c78-548564.html)
+
+#### Dial Plans
+
+By default, the Cisco SPA504G comes with the following dial plan:
+
+```
+(*xx|[3469]11|0|00|[2-9]xxxxxx|1xxx[2-9]xxxxxxS0|xxxxxxxxxxxx.)
+```
+
+Since we're based in the UK, we're using:
+
+```
+(*xx|<0:0044>[12357]xxxxxxxx.|<0:0044>[58][0][0]xxxxx.|00xxxxxxxxx.)
+```
+
+*xx = allow star type services
+<0:0044>[123]xxxxxxxx. = Convert all 01/02 or 03 calls into international format i.e. 00441 or 00442
+<0:0044>[58][0][0]xxxxx. = Allow 0800 and 0500 calls (freefone calls) and block anything else e.g. 0870 etc.
+00xxxxxxxxx. = Allow international numbers starting 00 with at least 9 digits following.
 
 ### License
 

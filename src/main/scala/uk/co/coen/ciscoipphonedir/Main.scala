@@ -23,6 +23,7 @@ import com.google.common.util.concurrent.RateLimiter
 import spray.routing.directives.BasicDirectives
 import com.google.common.cache.{CacheLoader, CacheBuilder}
 import java.util.concurrent.TimeUnit
+import com.typesafe.scalalogging.slf4j.Logging
 
 class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
   val list: ListBuffer[A] = ListBuffer()
@@ -40,7 +41,7 @@ class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
   def foreach[U](f: A => U) = list.foreach(f)
 }
 
-trait RateLimitDirectives extends BasicDirectives {
+trait RateLimitDirectives extends BasicDirectives with Logging {
   val rateLimit: Int
 
   private val rateLimiters = CacheBuilder.newBuilder().maximumSize(5000).expireAfterAccess(10, TimeUnit.MINUTES).build(
@@ -56,8 +57,10 @@ trait RateLimitDirectives extends BasicDirectives {
         ctx =>
           if (rateLimiters.get(ip).tryAcquire())
             inner(ctx.withHttpResponseHeadersMapped(headers => RawHeader("X-RateLimit-Limit", rateLimit.toString) :: headers))
-          else
+          else {
+            logger.warn(s"Rate limit of $rateLimit requests/minute exceeded by $ip. Responded with '429 Too Many Requests'.")
             ctx.complete(TooManyRequests, s"You have exceeded your rate limit of $rateLimit requests/second.")
+          }
     }
   }
 }
@@ -152,8 +155,10 @@ object Main extends App with SimpleRoutingApp with RateLimitDirectives {
         path("search.xml") {
           (rateLimit(ip) & alwaysCache(cache)) {
             parameters('q ?, 'tag ?, 'start.as[Int] ? 0) { (q, tag, start) =>
+              validate(q.isDefined || tag.isDefined, errorMsg = "need a query or a tag to search (q/tag params)")
               validate(start >= 0, errorMsg = s"start parameter must be positive: $start")
-              respondWithHeader(RawHeader("Refresh", s"100;url=http://$hostname/search.xml?q=${q.orElse(tag).get}&start=${start + 25}")) {
+
+              respondWithHeader(RawHeader("Refresh", s"0; url=http://$hostname/search.xml?q=${q.orElse(tag).get}&start=${start + 25}")) {
                 ctx =>
                   val uri = q match {
                     case Some(query) =>

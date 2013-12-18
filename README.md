@@ -43,18 +43,34 @@ Requires [Java 7](http://java.com/en/download/index.jsp). Capsule CRM users can 
 `My Preferences` via their username menu in the Capsule navigation bar.
 
 ```
-java -Dlogback.configurationFile=logback.production.xml -Dhostname=capsulecisco.coen.co.uk -Dhttp.interface=0.0.0.0 -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -jar capsule-cisco.jar
+java -Dlogback.configurationFile=logback.production.xml -Dhostname=capsulecisco.example.com -Dhttp.interface=0.0.0.0 -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=abcdef123456789 -jar capsule-cisco.jar
 ```
 
 Running with [authbind](http://mutelight.org/authbind) on Debian/Ubuntu:
 
 ```
-authbind --deep java -Dlogback.configurationFile=logback.production.xml -Dhttp.interface=0.0.0.0 -Dhttp.port=80 -Dhostname=capsulecisco.coen.co.uk -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar
+authbind --deep java -Dlogback.configurationFile=logback.production.xml -Dhttp.interface=0.0.0.0 -Dhttp.port=80 -Dhostname=capsulecisco.example.com -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=1234 -Djava.net.preferIPv4Stack -jar capsule-cisco.jar
 ```
 
 ##### HTTPS?
 
 Unfortunately Cisco IP phones do not support XML services over HTTPS.
+
+### Ubuntu Upstart
+
+```
+start on started network-interface INTERFACE=eth0
+stop on stopping network-interface INTERFACE=eth0
+
+env JVM_OPTIONS="-Xmx1024M -XX:+UseConcMarkSweepGC -XX:+AggressiveOpts -XX:MaxPermSize=300M -XX:+CMSClassUnloadingEnabled -XX:SurvivorRatio=8 -XX:+ExplicitGCInvokesConcurrent"
+env APP_OPTIONS="-Dhostname=capsulecisco.example.com -Dhttp.interface=0.0.0.0 -Dhttp.port=8082 -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=abcdef123456789"
+
+chdir /usr/share/capsule-cisco
+
+script
+    exec java $JVM_OPTIONS $APP_OPTIONS -jar capsule-cisco.jar 2>&1
+end script
+```
 
 ### Cisco IP Phone Setup
 
@@ -83,10 +99,10 @@ Since we're based in the UK, we're using:
 (*xx|<0:0044>[12357]xxxxxxxx.|<0:0044>[58][0][0]xxxxx.|00xxxxxxxxx.)
 ```
 
-*xx = allow star type services
-<0:0044>[123]xxxxxxxx. = Convert all 01/02 or 03 calls into international format i.e. 00441 or 00442
-<0:0044>[58][0][0]xxxxx. = Allow 0800 and 0500 calls (freefone calls) and block anything else e.g. 0870 etc.
-00xxxxxxxxx. = Allow international numbers starting 00 with at least 9 digits following.
+  - *xx = allow star type services
+  - <0:0044>[123]xxxxxxxx. = convert all 01/02 or 03 calls into international format i.e. 00441 or 00442
+  - <0:0044>[58][0][0]xxxxx. = allow 0800 and 0500 calls (freefone calls) and block anything else e.g. 0870
+  - 00xxxxxxxxx. = allow international numbers starting 00 with at least 9 digits following
 
 ### License
 

@@ -63,7 +63,7 @@ start on started network-interface INTERFACE=eth0
 stop on stopping network-interface INTERFACE=eth0
 
 env JVM_OPTIONS="-Xmx1024M -XX:+UseConcMarkSweepGC -XX:+AggressiveOpts -XX:MaxPermSize=300M -XX:+CMSClassUnloadingEnabled -XX:SurvivorRatio=8 -XX:+ExplicitGCInvokesConcurrent"
-env APP_OPTIONS="-Dhostname=capsulecisco.example.com -Dhttp.interface=0.0.0.0 -Dhttp.port=8082 -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=abcdef123456789"
+env APP_OPTIONS="-Dlogback.configurationFile=logback.production.xml -Dhostname=capsulecisco.example.com -Dhttp.interface=0.0.0.0 -Dhttp.port=8082 -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=abcdef123456789"
 
 chdir /usr/share/capsule-cisco
 

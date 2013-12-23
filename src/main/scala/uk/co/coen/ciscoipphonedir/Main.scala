@@ -172,7 +172,7 @@ object Main extends App with SimpleRoutingApp with RateLimitDirectives {
                       import spray.json.lenses.JsonLenses._
                       import DefaultJsonProtocol._
 
-                      val json = JsonParser(response.entity.asString)
+                      val json = JsonParser(response.entity.asString(HttpCharsets.`UTF-8`))
 
                       val organisations = 'parties / optionalField("organisation") / arrayOrSingletonAsArray
                       val persons = 'parties / optionalField("person") / arrayOrSingletonAsArray

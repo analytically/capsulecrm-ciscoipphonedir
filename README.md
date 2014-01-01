@@ -17,7 +17,7 @@ Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@ana
   - Saves your last 10 searches (per phone)
   - Pagination through pressing the `next` soft key
   - Rate limiting (defaults to 3 requests/second per phone) to prevent abuse
-  - Built using [spray](http://spray.io/) 1.2, a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/)
+  - Built using [spray](http://spray.io/) 1.2.0, a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/)
     REST/HTTP toolkit, should easily support > 1000 connected phones
 
 Planned:
@@ -108,4 +108,4 @@ Since we're based in the UK, we're using:
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-Copyright 2013 [Mathias Bogaert](mailto:mathias.bogaert@gmail.com).
+Copyright 2013-2014 [Mathias Bogaert](mailto:mathias.bogaert@gmail.com).

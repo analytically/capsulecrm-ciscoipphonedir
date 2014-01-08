@@ -3,4 +3,4 @@ scala:
   - 2.10.2
   - 2.10.3
 script:
-  - "sbt ++$TRAVIS_SCALA_VERSION package"
+  - "sbt ++$TRAVIS_SCALA_VERSION assembly"

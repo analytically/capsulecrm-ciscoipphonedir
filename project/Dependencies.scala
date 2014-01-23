@@ -38,4 +38,7 @@ object Dependencies {
 
   // Logging
   val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.0.13"
+
+  val scalatest = "org.scalatest" % "scalatest_2.10" % "2.0"
+  val gatling = "io.gatling.highcharts" % "gatling-charts-highcharts" % "2.0.0-SNAPSHOT"
 }

@@ -65,7 +65,10 @@ trait RateLimitDirectives extends BasicDirectives with Logging {
   }
 }
 
-object Main extends App with SimpleRoutingApp with RateLimitDirectives {
+object Main extends App with CapsuleCiscoService {
+}
+
+trait CapsuleCiscoService extends SimpleRoutingApp with RateLimitDirectives {
   val config = ConfigFactory.load
 
   val interface = config.getString("http.interface")

@@ -46,5 +46,6 @@ object Build extends sbt.Build {
     resolvers ++= Dependencies.nonStandardRepos,
     libraryDependencies ++=
       compile(scalalogging, jsonLenses, guava, jsr305, sprayCan, sprayRouting, sprayCaching, sprayClient, akkaSlf4j, logbackClassic)
+      ++ test(scalatest, gatling)
   )
 }

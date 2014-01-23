@@ -2,4 +2,7 @@ language: scala
 scala:
   - 2.10.3
 script:
-  - "sbt ++$TRAVIS_SCALA_VERSION assembly"
+  - "sbt -Dcapsulecrm.url=https://coen.capsulecrm.com -Dcapsulecrm.token=$CAPSULECRM_TOKEN ++$TRAVIS_SCALA_VERSION assembly"
+env:
+  global:
+  - secure: ESNG7eMVbJ0MzMSfGyoLa0YVym2rldgelnYQQwSaC0WhkPHXzTVsINhszeKf/O6w1YGNxBXqAomzWMJ68giHXw2YQfqFkeqFXmywSceyzo4oUTyrKYJmgKjQZnNadeMRPvUdGi7A3aqpIweyxbpKwvtMs8RC3YPUTzBF87QhS60=

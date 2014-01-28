@@ -2,7 +2,6 @@ package uk.co.coen.ciscoipphonedir
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import scala.concurrent.duration._
 import spray.http.RemoteAddress
 import spray.routing.Directive0
 
@@ -17,17 +16,19 @@ object TestMain extends CapsuleCiscoService with App {
   }
 }
 
-class SearchSimulation extends TestableSimulation {
+class SearchSimulationSpec extends GatlingSimulationSpec {
   TestMain.main(Array())
 
   val searchScenario = scenario("do a simple search for London")
     .exec(
     http("search")
-      .get("/search.xml?q=London")
+      .get("/search.xml")
+      .queryParam("q", "London")
       .check(status.is(200))
+      .check(header("Content-Type").is("text/xml"))
   )
 
-  setUp(searchScenario.inject(rampUsers(100).over(5 seconds)))
+  setUp(searchScenario.inject(atOnceUsers(100)))
     .protocols(http.baseURL("http://localhost:8080").warmUp("http://localhost:8080/search.xml?q=London"))
     .assertions(
     global.responseTime.max.lessThan(100),

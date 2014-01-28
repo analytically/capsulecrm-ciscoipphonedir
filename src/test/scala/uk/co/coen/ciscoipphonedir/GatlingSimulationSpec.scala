@@ -9,8 +9,7 @@ import io.gatling.core.result.reader.DataReader
 import io.gatling.app.GatlingStatusCodes
 import io.gatling.core.config.GatlingConfiguration._
 
-trait TestableSimulation extends Simulation with FlatSpecLike {
-
+trait GatlingSimulationSpec extends Simulation with FlatSpecLike {
   val props = scala.collection.mutable.Map.empty[String, String]
   for { p <- sys.props if p._1.startsWith("gatling") } yield { props += p }
   GatlingConfiguration.setUp(props)

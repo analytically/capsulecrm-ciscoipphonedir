@@ -25,7 +25,7 @@ class SearchSimulationSpec extends GatlingSimulationSpec {
       .get("/search.xml")
       .queryParam("q", "London")
       .check(status.is(200))
-      .check(header("Content-Type").is("text/xml"))
+      .check(header("Content-Type").is("text/xml; charset=UTF-8"))
   )
 
   setUp(searchScenario.inject(atOnceUsers(100)))

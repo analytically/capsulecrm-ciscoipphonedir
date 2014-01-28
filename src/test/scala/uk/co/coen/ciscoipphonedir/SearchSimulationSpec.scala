@@ -4,6 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import spray.http.RemoteAddress
 import spray.routing.Directive0
+import scala.concurrent.duration._
 
 // disable rate limiting
 object TestMain extends CapsuleCiscoService with App {
@@ -28,7 +29,7 @@ class SearchSimulationSpec extends GatlingSimulationSpec {
       .check(header("Content-Type").is("text/xml; charset=UTF-8"))
   )
 
-  setUp(searchScenario.inject(atOnceUsers(100)))
+  setUp(searchScenario.inject(rampUsers(100).over(5 seconds)))
     .protocols(http.baseURL("http://localhost:8080").warmUp("http://localhost:8080/search.xml?q=London"))
     .assertions(
     global.responseTime.max.lessThan(100),

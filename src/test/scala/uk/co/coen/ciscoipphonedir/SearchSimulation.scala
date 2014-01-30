@@ -17,7 +17,7 @@ object TestMain extends CapsuleCiscoService with App {
   }
 }
 
-class SearchSimulationSpec extends GatlingSimulationSpec {
+class SearchSimulation extends GatlingSimulationSpec {
   TestMain.main(Array())
 
   val searchScenario = scenario("do a simple search for London")

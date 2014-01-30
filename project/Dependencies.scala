@@ -1,11 +1,6 @@
 import sbt._
 
 object Dependencies {
-  val nonStandardRepos = Seq(
-    "Spray repo" at "http://repo.spray.io/",
-    "Spray nightlies" at "http://nightlies.spray.io/"
-  )
-
   def compile(deps: ModuleID*): Seq[ModuleID] = deps map (_ % "compile")
 
   def provided(deps: ModuleID*): Seq[ModuleID] = deps map (_ % "provided")
@@ -37,8 +32,9 @@ object Dependencies {
   val akkaSlf4j = "com.typesafe.akka" %% "akka-slf4j" % V.akka
 
   // Logging
-  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.0.13"
+  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.1.0"
 
+  // Testing
   val scalatest = "org.scalatest" % "scalatest_2.10" % "2.0"
   val gatling = "io.gatling.highcharts" % "gatling-charts-highcharts" % "2.0.0-SNAPSHOT"
 }

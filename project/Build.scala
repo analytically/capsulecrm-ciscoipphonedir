@@ -18,7 +18,7 @@ object Build extends sbt.Build {
     FormattingPreferences()
   }
 
-  lazy val buildVersion = "1.0.2"
+  lazy val buildVersion = "1.0.3"
 
   lazy val root = Project(id = "capsulecrm-ciscoipphonedir", base = file("."))
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
@@ -39,11 +39,8 @@ object Build extends sbt.Build {
       "-deprecation",
       "-target:jvm-1.7"),
     jarName in assembly := "capsule-cisco.jar",
-    resolvers += Resolver.typesafeRepo("releases"),
-    resolvers += Resolver.typesafeRepo("snapshots"),
-    resolvers += Resolver.sonatypeRepo("releases"),
     resolvers += Resolver.sonatypeRepo("snapshots"),
-    resolvers ++= Dependencies.nonStandardRepos,
+    resolvers += "spray repo" at "http://repo.spray.io",
     libraryDependencies ++=
       compile(scalalogging, jsonLenses, guava, jsr305, sprayCan, sprayRouting, sprayCaching, sprayClient, akkaSlf4j, logbackClassic)
       ++ test(scalatest, gatling)

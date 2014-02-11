@@ -15,7 +15,7 @@ import MediaTypes._
 import spray.routing.directives.CachingDirectives._
 import scala.concurrent.duration.Duration
 import spray.http.Uri._
-import com.google.common.base.CharMatcher
+import com.google.common.base.CharMatcher._
 import scala.collection._
 import mutable.ListBuffer
 import spray.http.HttpHeaders.RawHeader
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 import com.typesafe.scalalogging.slf4j.Logging
 
 class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
-  val list: ListBuffer[A] = ListBuffer()
+  private[this] val list: ListBuffer[A] = ListBuffer()
 
   def +=(elem: A): this.type = {
     if (!list.contains(elem)) {
@@ -44,7 +44,7 @@ class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
 trait RateLimitDirectives extends BasicDirectives with Logging {
   val rateLimit: Int
 
-  private val rateLimiters = CacheBuilder.newBuilder().maximumSize(5000).expireAfterAccess(10, TimeUnit.MINUTES).build(
+  private[this] val rateLimiters = CacheBuilder.newBuilder().maximumSize(5000).expireAfterAccess(10, TimeUnit.MINUTES).build(
     new CacheLoader[RemoteAddress, RateLimiter] {
       def load(key: RemoteAddress) = {
         RateLimiter.create(rateLimit)
@@ -84,8 +84,6 @@ trait CapsuleCiscoService extends SimpleRoutingApp with RateLimitDirectives {
   implicit val system = ActorSystem("capsule-cisco", config)
   sys.addShutdownHook(system.shutdown())
   implicit val executionContext = system.dispatcher
-
-  val newlines = CharMatcher.is('\n')
 
   val capsulePipeline: HttpRequest => Future[HttpResponse] = (
     addCredentials(BasicHttpCredentials(capsuleToken, ""))
@@ -186,7 +184,7 @@ trait CapsuleCiscoService extends SimpleRoutingApp with RateLimitDirectives {
                       val personArrayIds = persons / filter(('contacts / 'phone).is[JsValue](_ => true)) / 'id
 
                       ctx.complete(OK,
-                        """<?xml version="1.0" encoding="utf-8" ?>""" + newlines.removeFrom(
+                        """<?xml version="1.0" encoding="utf-8" ?>""" + is('\n').removeFrom(
                           <CiscoIPPhoneDirectory>
                             <Title>{ title }</Title>
                             <Prompt>{ title }</Prompt>
@@ -194,7 +192,7 @@ trait CapsuleCiscoService extends SimpleRoutingApp with RateLimitDirectives {
                               for (id <- json.extract[String](organisationArrayIds)) yield {
                                 <DirectoryEntry>
                                   <Name>{ json.extract[String](organisations / filter('id.is[String](_ == id)) / 'name) }</Name>
-                                  <Telephone>{ CharMatcher.WHITESPACE.removeFrom(json.extract[String](organisations / filter('id.is[String](_ == id)) / firstPhoneNumber).head) }</Telephone>
+                                  <Telephone>{ WHITESPACE.removeFrom(json.extract[String](organisations / filter('id.is[String](_ == id)) / firstPhoneNumber).head) }</Telephone>
                                 </DirectoryEntry>
                               }
                             }
@@ -209,7 +207,7 @@ trait CapsuleCiscoService extends SimpleRoutingApp with RateLimitDirectives {
                                       }
                                     }
                                   </Name>
-                                  <Telephone>{ CharMatcher.WHITESPACE.removeFrom(json.extract[String](persons / filter('id.is[String](_ == id)) / firstPhoneNumber).head) }</Telephone>
+                                  <Telephone>{ WHITESPACE.removeFrom(json.extract[String](persons / filter('id.is[String](_ == id)) / firstPhoneNumber).head) }</Telephone>
                                 </DirectoryEntry>
                               }
                             }

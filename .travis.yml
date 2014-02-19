@@ -5,4 +5,7 @@ script:
   - sbt -Dcapsulecrm.url=https://coen.capsulecrm.com -Dcapsulecrm.token=$CAPSULECRM_TOKEN ++$TRAVIS_SCALA_VERSION assembly
 env:
   global:
-    secure: EMONoCL4Mwqfgijvnsg5TxasQOAeEFY/IC5hO79DkswAsNw7Ldrv66TZefunIl0YRSV6Za/Oyb3yxtROoG+waDbF4LK2gK8kIuDtTn0w6lWXtmWXu2DhW6eUpxLYZ+WLJya10u/gD8vPKXTL1ewfhrXn66oEdvaG3As2qE2oAvA=
+    - secure: EMONoCL4Mwqfgijvnsg5TxasQOAeEFY/IC5hO79DkswAsNw7Ldrv66TZefunIl0YRSV6Za/Oyb3yxtROoG+waDbF4LK2gK8kIuDtTn0w6lWXtmWXu2DhW6eUpxLYZ+WLJya10u/gD8vPKXTL1ewfhrXn66oEdvaG3As2qE2oAvA=
+cache:
+  directories:
+  - $HOME/.ivy2

@@ -4,17 +4,18 @@ import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import spray.http._
 import scala.concurrent.Future
-import spray.client.pipelining._
 import spray.routing.{Directive0, SimpleRoutingApp}
-import spray.json.{DefaultJsonProtocol, JsValue, JsonParser}
+import spray.json.{JsValue, JsonParser}
 import spray.http.StatusCodes._
-import spray.http.HttpRequest
 import scala.Some
-import spray.http.HttpResponse
 import MediaTypes._
 import spray.routing.directives.CachingDirectives._
 import scala.concurrent.duration.Duration
-import spray.http.Uri._
+import spray.http._
+import spray.json.DefaultJsonProtocol
+import spray.httpx.encoding.{Gzip, Deflate}
+import spray.httpx.SprayJsonSupport._
+import spray.client.pipelining._
 import com.google.common.base.CharMatcher._
 import scala.collection._
 import mutable.ListBuffer
@@ -24,6 +25,7 @@ import spray.routing.directives.BasicDirectives
 import com.google.common.cache.{CacheLoader, CacheBuilder}
 import java.util.concurrent.TimeUnit
 import com.typesafe.scalalogging.slf4j.Logging
+import spray.http.Uri.Query
 
 class DistinctEvictingList[A](maxSize: Int) extends Traversable[A] {
   private[this] val list: ListBuffer[A] = ListBuffer()
@@ -88,7 +90,9 @@ trait CapsuleCiscoService extends SimpleRoutingApp with RateLimitDirectives {
   val capsulePipeline: HttpRequest => Future[HttpResponse] = (
     addCredentials(BasicHttpCredentials(capsuleToken, ""))
     ~> addHeader("Accept", "application/json")
-    ~> sendReceive)
+    ~> encode(Gzip)
+    ~> sendReceive
+    ~> decode(Deflate))
 
   val lastSearches = mutable.Map[RemoteAddress, DistinctEvictingList[String]]()
   val cache = routeCache(maxCapacity = 5000, timeToIdle = Duration("10 min"))

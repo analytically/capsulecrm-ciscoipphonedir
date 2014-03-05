@@ -12,7 +12,7 @@ object Dependencies {
   def container(deps: ModuleID*): Seq[ModuleID] = deps map (_ % "container")
 
   object V {
-    val akka = "2.2.3"
+    val akka = "2.2.4"
     val spray = "1.2.0"
   }
 
@@ -35,6 +35,6 @@ object Dependencies {
   val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.1.1"
 
   // Testing
-  val scalatest = "org.scalatest" % "scalatest_2.10" % "2.0"
+  val scalatest = "org.scalatest" %% "scalatest" % "2.1.0"
   val gatling = "io.gatling.highcharts" % "gatling-charts-highcharts" % "2.0.0-SNAPSHOT"
 }

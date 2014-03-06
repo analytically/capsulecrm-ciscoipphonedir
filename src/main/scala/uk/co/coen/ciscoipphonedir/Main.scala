@@ -60,7 +60,7 @@ trait RateLimitDirectives extends BasicDirectives with Logging {
           if (rateLimiters.get(ip).tryAcquire())
             inner(ctx.withHttpResponseHeadersMapped(headers => RawHeader("X-RateLimit-Limit", rateLimit.toString) :: headers))
           else {
-            logger.warn(s"Rate limit of $rateLimit requests/minute exceeded by $ip, responding with status '429 Too Many Requests'")
+            logger.warn(s"Rate limit of $rateLimit requests/second exceeded by $ip, responding with status '429 Too Many Requests'")
             ctx.complete(TooManyRequests, s"You have exceeded your rate limit of $rateLimit requests/second.")
           }
     }

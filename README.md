@@ -17,7 +17,7 @@ Development sponsored by [Coen Recruitment](http://www.coen.co.uk). Follow [@ana
   - Saves your last 10 searches (per phone)
   - Pagination through pressing the `next` soft key
   - Rate limiting (defaults to 3 requests/second per phone) to prevent abuse
-  - Built using [spray](http://spray.io/) 1.2.0, a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/)
+  - Built using [spray](http://spray.io/) 1.3, a [high-performance](http://spray.io/blog/2013-05-24-benchmarking-spray/)
     REST/HTTP toolkit, should easily support > 1000 connected phones
 
 Planned:
@@ -26,7 +26,7 @@ Planned:
 
 ### Requirements
 
-Java 7 or later. A Capsule CRM account and token.
+[Java 7](http://java.com/en/download/index.jsp) or later. A Capsule CRM account and token.
 
 ### Building (optional)
 
@@ -38,9 +38,8 @@ This builds a single, executable 'fat' jar in `target/scala-2.10`.
 
 ### Running
 
-Prebuilt releases are available [here](https://github.com/analytically/capsulecrm-ciscoipphonedir/releases).
-Requires [Java 7](http://java.com/en/download/index.jsp). Capsule CRM users can find their API token by visiting
-`My Preferences` via their username menu in the Capsule navigation bar.
+Prebuilt releases are available [here](https://github.com/analytically/capsulecrm-ciscoipphonedir/releases). Capsule CRM users
+can find their API token by visiting `My Preferences` via their username menu in the Capsule navigation bar.
 
 ```
 java -Dlogback.configurationFile=logback.production.xml -Dhostname=capsulecisco.example.com -Dhttp.interface=0.0.0.0 -Dcapsulecrm.url=https://example.capsulecrm.com -Dcapsulecrm.token=abcdef123456789 -jar capsule-cisco.jar

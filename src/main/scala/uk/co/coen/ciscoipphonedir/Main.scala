@@ -13,7 +13,7 @@ import spray.routing.directives.CachingDirectives._
 import scala.concurrent.duration.Duration
 import spray.http._
 import spray.json.DefaultJsonProtocol
-import spray.httpx.encoding.{Gzip, Deflate}
+import spray.httpx.encoding.Gzip
 import spray.httpx.SprayJsonSupport._
 import spray.client.pipelining._
 import com.google.common.base.CharMatcher._
@@ -92,7 +92,7 @@ trait CapsuleCiscoService extends SimpleRoutingApp with RateLimitDirectives {
     ~> addHeader("Accept", "application/json")
     ~> encode(Gzip)
     ~> sendReceive
-    ~> decode(Deflate))
+    ~> decode(Gzip))
 
   val lastSearches = mutable.Map[RemoteAddress, DistinctEvictingList[String]]()
   val cache = routeCache(maxCapacity = 5000, timeToIdle = Duration("10 min"))

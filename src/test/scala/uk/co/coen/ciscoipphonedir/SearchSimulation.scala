@@ -32,7 +32,7 @@ class SearchSimulation extends GatlingSimulationSpec {
   setUp(searchScenario.inject(rampUsers(100).over(5 seconds)))
     .protocols(http.baseURL("http://localhost:8080").warmUp("http://localhost:8080/search.xml?q=London"))
     .assertions(
-    global.responseTime.max.lessThan(100),
+    global.responseTime.max.lessThan(150),
     global.failedRequests.count.is(0)
   )
 }

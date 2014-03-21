@@ -30,7 +30,7 @@ object Build extends sbt.Build {
     description := "Use Capsule CRM on a Cisco IP phone",
     startYear := Some(2013),
     licenses := Seq("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-    scalaVersion := "2.10.3",
+    scalaVersion := "2.10.4",
     scalacOptions := Seq(
       "-encoding", "utf8",
       "-unchecked",

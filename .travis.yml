@@ -1,6 +1,6 @@
 language: scala
 scala:
-  - 2.10.3
+  - 2.10.4
 script:
   - sbt -Dcapsulecrm.url=https://coen.capsulecrm.com -Dcapsulecrm.token=$CAPSULECRM_TOKEN ++$TRAVIS_SCALA_VERSION assembly
 env:

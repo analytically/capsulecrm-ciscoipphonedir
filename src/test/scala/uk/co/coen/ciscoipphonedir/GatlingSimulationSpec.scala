@@ -24,11 +24,11 @@ trait GatlingSimulationSpec extends Simulation with FlatSpecLike {
     val runOutcome = new Runner(selection).run
     val result = runOutcome._2 match {
       case sim: Simulation if !sim.assertions.isEmpty => {
-        if (Assertion.assertThat(sim.assertions, DataReader.newInstance(runOutcome._1))) GatlingStatusCodes.success
-        else GatlingStatusCodes.assertionsFailed
+        if (Assertion.assertThat(sim.assertions, DataReader.newInstance(runOutcome._1))) GatlingStatusCodes.Success
+        else GatlingStatusCodes.AssertionsFailed
       }
-      case _ => GatlingStatusCodes.success
+      case _ => GatlingStatusCodes.Success
     }
-    assertResult(GatlingStatusCodes.success, "simulation has assertion errors")(result)
+    assertResult(GatlingStatusCodes.Success, "simulation has assertion errors")(result)
   }
 }

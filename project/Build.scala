@@ -18,7 +18,7 @@ object Build extends sbt.Build {
     FormattingPreferences()
   }
 
-  lazy val buildVersion = "1.0.3"
+  lazy val buildVersion = "1.0.4"
 
   lazy val root = Project(id = "capsulecrm-ciscoipphonedir", base = file("."))
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
@@ -26,6 +26,7 @@ object Build extends sbt.Build {
     // .settings(formatSettings: _*) - use carefully, screws up XML
     .settings(
     version := buildVersion,
+    organization := "uk.co.coen",
     homepage := Some(new URL("https://github.com/analytically/capsulecrm-ciscoipphonedir")),
     description := "Use Capsule CRM on a Cisco IP phone",
     startYear := Some(2013),

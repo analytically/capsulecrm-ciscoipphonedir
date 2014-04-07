@@ -32,7 +32,7 @@ object Dependencies {
   val akkaSlf4j = "com.typesafe.akka" %% "akka-slf4j" % V.akka
 
   // Logging
-  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.1.1"
+  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.1.2"
 
   // Testing
   val scalatest = "org.scalatest" %% "scalatest" % "2.1.0"

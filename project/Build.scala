@@ -2,8 +2,7 @@ import com.typesafe.sbt.SbtScalariform
 import com.typesafe.sbt.SbtScalariform.ScalariformKeys
 import sbt._
 import Keys._
-import sbtassembly.Plugin.AssemblyKeys._
-import scala.Some
+import sbtassembly.AssemblyPlugin.autoImport._
 
 object Build extends sbt.Build {
   import Dependencies._
@@ -18,11 +17,10 @@ object Build extends sbt.Build {
     FormattingPreferences()
   }
 
-  lazy val buildVersion = "1.0.4"
+  lazy val buildVersion = "1.0.5"
 
   lazy val root = Project(id = "capsulecrm-ciscoipphonedir", base = file("."))
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-    .settings(sbtassembly.Plugin.assemblySettings: _*)
     // .settings(formatSettings: _*) - use carefully, screws up XML
     .settings(
     version := buildVersion,
@@ -39,9 +37,8 @@ object Build extends sbt.Build {
       "-language:postfixOps",
       "-deprecation",
       "-target:jvm-1.7"),
-    jarName in assembly := "capsule-cisco.jar",
+    assemblyJarName in assembly := "capsule-cisco.jar",
     resolvers += Resolver.sonatypeRepo("snapshots"),
-    resolvers += "spray repo" at "http://repo.spray.io",
     libraryDependencies ++=
       compile(scalalogging, jsonLenses, guava, jsr305, sprayCan, sprayRouting, sprayCaching, sprayClient, akkaSlf4j, logbackClassic)
       ++ test(scalatest, gatling)

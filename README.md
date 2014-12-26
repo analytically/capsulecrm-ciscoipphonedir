@@ -107,4 +107,4 @@ Since we're based in the UK, we're using:
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-Copyright 2013-2014 [Mathias Bogaert](mailto:mathias.bogaert@gmail.com).
+Copyright 2013-2015 [Mathias Bogaert](mailto:mathias.bogaert@gmail.com).

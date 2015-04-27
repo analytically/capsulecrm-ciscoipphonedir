@@ -12,7 +12,7 @@ object Dependencies {
   def container(deps: ModuleID*): Seq[ModuleID] = deps map (_ % "container")
 
   object V {
-    val akka = "2.3.9"
+    val akka = "2.3.10"
     val spray = "1.3.3"
   }
 
@@ -32,7 +32,7 @@ object Dependencies {
   val akkaSlf4j = "com.typesafe.akka" %% "akka-slf4j" % V.akka
 
   // Logging
-  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.1.2"
+  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.1.3"
 
   // Testing
   val scalatest = "org.scalatest" %% "scalatest" % "2.2.3"

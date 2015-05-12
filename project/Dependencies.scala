@@ -12,7 +12,7 @@ object Dependencies {
   def container(deps: ModuleID*): Seq[ModuleID] = deps map (_ % "container")
 
   object V {
-    val akka = "2.3.10"
+    val akka = "2.3.11"
     val spray = "1.3.3"
   }
 

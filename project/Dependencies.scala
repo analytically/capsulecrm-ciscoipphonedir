@@ -18,7 +18,7 @@ object Dependencies {
 
   // Utilities
   val scalalogging = "com.typesafe" %% "scalalogging-slf4j" % "1.1.0"
-  val jsonLenses = "net.virtual-void" %%  "json-lenses" % "0.6.0"
+  val jsonLenses = "net.virtual-void" %%  "json-lenses" % "0.6.1"
   val guava = "com.google.guava" % "guava" % "18.0"
   val jsr305 = "com.google.code.findbugs" % "jsr305" % "2.0.3" // see http://stackoverflow.com/questions/10007994/why-do-i-need-jsr305-to-use-guava-in-scala
 
